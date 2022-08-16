@@ -21,7 +21,7 @@ fn ray_color(r: &Ray, world: &World, depth: u64) -> Color {
     if depth < 1 {
         return Color::new(0.0, 0.0, 0.0);
     }
-    if let Some(rec) = world.hit(r, 0.001, f64::INFINITY) {
+    if let Some(rec) = world.hit(r, 0.001, f32::INFINITY) {
         if let Some((attenuation, scattered)) = rec.mat.scatter(r, &rec) {
             attenuation * ray_color(&scattered, world, depth - 1)
         } else {
@@ -36,9 +36,9 @@ fn ray_color(r: &Ray, world: &World, depth: u64) -> Color {
 
 fn main() {
     // Image
-    const ASPECT_RATIO: f64 = 3.0 / 2.0;
+    const ASPECT_RATIO: f32 = 3.0 / 2.0;
     const IMAGE_WIDTH: u64 = 1200;
-    const IMAGE_HEIGHT: u64 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as u64;
+    const IMAGE_HEIGHT: u64 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u64;
     const SAMPLES_PER_PIXEL: u64 = 500;
     const MAX_DEPTH: u64 = 50;
 
@@ -62,7 +62,9 @@ fn main() {
         dist_to_focus,
     );
 
-    println!("P3\n{} {}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
+    println!("P3");
+    println!("{} {}", IMAGE_WIDTH, IMAGE_HEIGHT);
+    println!("255");
 
     let mut rng = rand::thread_rng();
     for j in (0..IMAGE_HEIGHT).rev() {
@@ -72,11 +74,11 @@ fn main() {
         for i in 0..IMAGE_WIDTH {
             let mut pixel_color = Color::new(0.0, 0.0, 0.0);
             for _ in 0..SAMPLES_PER_PIXEL {
-                let rand_u: f64 = rng.gen();
-                let rand_v: f64 = rng.gen();
+                let rand_u: f32 = rng.gen();
+                let rand_v: f32 = rng.gen();
 
-                let u = (i as f64 + rand_u) / ((IMAGE_WIDTH - 1) as f64);
-                let v = (j as f64 + rand_v) / ((IMAGE_HEIGHT - 1) as f64);
+                let u = (i as f32 + rand_u) / ((IMAGE_WIDTH - 1) as f32);
+                let v = (j as f32 + rand_v) / ((IMAGE_HEIGHT - 1) as f32);
 
                 let r = cam.get_ray(u, v);
                 pixel_color += ray_color(&r, &world, MAX_DEPTH);
@@ -100,11 +102,11 @@ fn random_scene() -> World {
 
     for a in -11..=11 {
         for b in -11..=11 {
-            let choose_mat: f64 = rng.gen();
+            let choose_mat: f32 = rng.gen();
             let center = Point3::new(
-                (a as f64) + rng.gen_range(0.0..0.9),
+                (a as f32) + rng.gen_range(0.0..0.9),
                 0.2,
-                (b as f64) + rng.gen_range(0.0..0.9),
+                (b as f32) + rng.gen_range(0.0..0.9),
             );
             if choose_mat < 0.8 {
                 // Diffuse

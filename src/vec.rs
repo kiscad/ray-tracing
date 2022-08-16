@@ -4,27 +4,27 @@ use rand::Rng;
 
 #[derive(Clone, Copy)]
 pub struct Vec3 {
-    e: [f64; 3],
+    e: [f32; 3],
 }
 
 pub type Point3 = Vec3;
 pub type Color = Vec3;
 
 impl Vec3 {
-    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
+    pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
         Vec3 { e: [e0, e1, e2] }
     }
 }
 
 impl std::ops::Index<usize> for Vec3 {
-    type Output = f64;
-    fn index(&self, index: usize) -> &f64 {
+    type Output = f32;
+    fn index(&self, index: usize) -> &f32 {
         &self.e[index]
     }
 }
 
 impl std::ops::IndexMut<usize> for Vec3 {
-    fn index_mut(&mut self, index: usize) -> &mut f64 {
+    fn index_mut(&mut self, index: usize) -> &mut f32 {
         &mut self.e[index]
     }
 }
@@ -63,9 +63,9 @@ impl std::ops::SubAssign for Vec3 {
     }
 }
 
-impl std::ops::Mul<f64> for Vec3 {
+impl std::ops::Mul<f32> for Vec3 {
     type Output = Vec3;
-    fn mul(self, other: f64) -> Vec3 {
+    fn mul(self, other: f32) -> Vec3 {
         Vec3 {
             e: [self[0] * other, self[1] * other, self[2] * other],
         }
@@ -81,15 +81,15 @@ impl std::ops::Mul<Vec3> for Vec3 {
     }
 }
 
-impl std::ops::MulAssign<f64> for Vec3 {
-    fn mul_assign(&mut self, other: f64) {
+impl std::ops::MulAssign<f32> for Vec3 {
+    fn mul_assign(&mut self, other: f32) {
         self[0] *= other;
         self[1] *= other;
         self[2] *= other;
     }
 }
 
-impl std::ops::Mul<Vec3> for f64 {
+impl std::ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
     fn mul(self, other: Vec3) -> Vec3 {
@@ -99,17 +99,17 @@ impl std::ops::Mul<Vec3> for f64 {
     }
 }
 
-impl std::ops::Div<f64> for Vec3 {
+impl std::ops::Div<f32> for Vec3 {
     type Output = Vec3;
-    fn div(self, other: f64) -> Vec3 {
+    fn div(self, other: f32) -> Vec3 {
         Vec3 {
             e: [self[0] / other, self[1] / other, self[2] / other],
         }
     }
 }
 
-impl std::ops::DivAssign<f64> for Vec3 {
-    fn div_assign(&mut self, other: f64) {
+impl std::ops::DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, other: f32) {
         self[0] /= other;
         self[1] /= other;
         self[2] /= other;
@@ -117,23 +117,23 @@ impl std::ops::DivAssign<f64> for Vec3 {
 }
 
 impl Vec3 {
-    pub fn x(self) -> f64 {
+    pub fn x(self) -> f32 {
         self[0]
     }
 
-    pub fn y(self) -> f64 {
+    pub fn y(self) -> f32 {
         self[1]
     }
 
-    pub fn z(self) -> f64 {
+    pub fn z(self) -> f32 {
         self[2]
     }
 
-    pub fn dot(self, other: Vec3) -> f64 {
+    pub fn dot(self, other: Vec3) -> f32 {
         self[0] * other[0] + self[1] * other[1] + self[2] * other[2]
     }
 
-    pub fn length(self) -> f64 {
+    pub fn length(self) -> f32 {
         self.dot(self).sqrt()
     }
 
@@ -152,7 +152,7 @@ impl Vec3 {
     }
 
     pub fn near_zero(self) -> bool {
-        const EPS: f64 = 1.0e-8;
+        const EPS: f32 = 1.0e-8;
         self[0].abs() < EPS && self[1].abs() < EPS && self[2].abs() < EPS
     }
 
@@ -170,15 +170,15 @@ impl Display for Vec3 {
 impl Vec3 {
     pub fn format_color(self, samples_per_pixel: u64) -> String {
         let ir = (256.0
-            * (self[0] / (samples_per_pixel as f64))
+            * (self[0] / (samples_per_pixel as f32))
                 .sqrt()
                 .clamp(0.0, 0.999)) as u64;
         let ig = (256.0
-            * (self[1] / (samples_per_pixel as f64))
+            * (self[1] / (samples_per_pixel as f32))
                 .sqrt()
                 .clamp(0.0, 0.999)) as u64;
         let ib = (256.0
-            * (self[2] / (samples_per_pixel as f64))
+            * (self[2] / (samples_per_pixel as f32))
                 .sqrt()
                 .clamp(0.0, 0.999)) as u64;
 
@@ -187,7 +187,7 @@ impl Vec3 {
 }
 
 impl Vec3 {
-    pub fn random(r: std::ops::Range<f64>) -> Vec3 {
+    pub fn random(r: std::ops::Range<f32>) -> Vec3 {
         let mut rng = rand::thread_rng();
 
         Vec3 {
@@ -217,7 +217,7 @@ impl Vec3 {
         }
     }
 
-    pub fn refract(self, n: Vec3, etai_over_etat: f64) -> Vec3 {
+    pub fn refract(self, n: Vec3, etai_over_etat: f32) -> Vec3 {
         let cos_theta = (-1.0 * self).dot(n).min(1.0);
         let r_out_perp = etai_over_etat * (self + cos_theta * n);
         let r_out_parallel = -(1.0 - r_out_perp.length().powi(2)).abs().sqrt() * n;

@@ -8,12 +8,12 @@ use super::vec::{Point3, Vec3};
 
 pub struct Sphere {
     center: Point3,
-    radius: f64,
+    radius: f32,
     mat: Rc<dyn Scatter>,
 }
 
 impl Sphere {
-    pub fn new(cen: Point3, r: f64, m: Rc<dyn Scatter>) -> Sphere {
+    pub fn new(cen: Point3, r: f32, m: Rc<dyn Scatter>) -> Sphere {
         Sphere {
             center: cen,
             radius: r,
@@ -23,7 +23,7 @@ impl Sphere {
 }
 
 impl Hit for Sphere {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = r.origin() - self.center;
         let a = r.direction().length().powi(2);
         let half_b = oc.dot(r.direction());
