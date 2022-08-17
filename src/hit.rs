@@ -1,4 +1,5 @@
-use std::rc::Rc;
+// use std::rc::Rc;
+use std::sync::Arc;
 
 use super::material::Scatter;
 use super::ray::Ray;
@@ -7,7 +8,7 @@ use super::vec::{Point3, Vec3};
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
-    pub mat: Rc<dyn Scatter>,
+    pub mat: Arc<dyn Scatter>,
     pub t: f32,
     pub front_face: bool,
 }
@@ -27,7 +28,7 @@ pub trait Hit {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
 
-pub type World = Vec<Box<dyn Hit>>;
+pub type World = Vec<Arc<dyn Hit + Send + Sync>>;
 
 impl Hit for World {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {

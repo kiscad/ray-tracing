@@ -1,4 +1,5 @@
-use std::rc::Rc;
+// use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::material::Scatter;
 
@@ -9,11 +10,11 @@ use super::vec::{Point3, Vec3};
 pub struct Sphere {
     center: Point3,
     radius: f32,
-    mat: Rc<dyn Scatter>,
+    mat: Arc<dyn Scatter + Send + Sync>,
 }
 
 impl Sphere {
-    pub fn new(cen: Point3, r: f32, m: Rc<dyn Scatter>) -> Sphere {
+    pub fn new(cen: Point3, r: f32, m: Arc<dyn Scatter + Send + Sync>) -> Sphere {
         Sphere {
             center: cen,
             radius: r,
