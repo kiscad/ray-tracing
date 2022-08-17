@@ -21,7 +21,7 @@ impl Lambertian {
 }
 
 impl Scatter for Lambertian {
-    fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<(Color, Ray)> {
+    fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<(Color, Ray)> {
         let mut scatter_dir = rec.normal + Vec3::random_in_unit_sphere().normalize();
         if scatter_dir.near_zero() {
             // Catch degenerate scatter direction
