@@ -1,4 +1,3 @@
-#![feature(portable_simd)]
 mod camera;
 mod hit;
 mod material;
@@ -72,14 +71,9 @@ fn main() {
             let mut rng = rand::thread_rng();
             for i in 0..IMAGE_WIDTH {
                 let mut pixel_color = Color::default();
-                // let rand_us: [f32; SAMPLES_PER_PIXEL] = rng.gen();
-                // let rand_vs: [f32; SAMPLES_PER_PIXEL] = rng.gen();
                 for _ in 0..SAMPLES_PER_PIXEL {
-                    let rand_u: f32 = rng.gen();
-                    let rand_v: f32 = rng.gen();
-                    let u = (i as f32 + rand_u) / (IMAGE_WIDTH - 1) as f32;
-                    let v = (j as f32 + rand_v) / (IMAGE_HEIGHT - 1) as f32;
-
+                    let u = (i as f32 + rng.gen::<f32>()) / (IMAGE_WIDTH - 1) as f32;
+                    let v = (j as f32 + rng.gen::<f32>()) / (IMAGE_HEIGHT - 1) as f32;
                     let r = cam.get_ray(u, v);
                     pixel_color += ray_color(&r, &world, MAX_DEPTH);
                 }

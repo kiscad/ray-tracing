@@ -1,11 +1,9 @@
-use std::fmt::{self, Display};
-use std::simd::f32x4;
-
 use rand::Rng;
+use std::fmt::{self, Display};
 
 #[derive(Clone, Copy)]
 pub struct Vec3 {
-    e: [f32; 4],
+    e: [f32; 3],
 }
 
 pub type Point3 = Vec3;
@@ -13,9 +11,7 @@ pub type Color = Vec3;
 
 impl Vec3 {
     pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
-        Vec3 {
-            e: [e0, e1, e2, e2],
-        }
+        Vec3 { e: [e0, e1, e2] }
     }
 }
 
@@ -34,167 +30,94 @@ impl std::ops::IndexMut<usize> for Vec3 {
 
 impl Default for Vec3 {
     fn default() -> Self {
-        Vec3 {
-            e: [0.0, 0.0, 0.0, 0.0],
-        }
+        Vec3 { e: [0.0, 0.0, 0.0] }
     }
 }
 
 impl std::ops::Add for Vec3 {
     type Output = Vec3;
-    // fn add(self, rhs: Vec3) -> Self::Output {
-    //     Vec3 {
-    //         e: [
-    //             self[0] + rhs[0],
-    //             self[1] + rhs[1],
-    //             self[2] + rhs[2],
-    //             self[3] + rhs[3],
-    //         ],
-    //     }
-    // }
     fn add(self, rhs: Vec3) -> Self::Output {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        let e = (left + right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
+        }
     }
 }
 
 impl std::ops::AddAssign for Vec3 {
-    // fn add_assign(&mut self, rhs: Vec3) {
-    //     self[0] += rhs[0];
-    //     self[1] += rhs[1];
-    //     self[2] += rhs[2];
-    // }
     fn add_assign(&mut self, rhs: Vec3) {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        self.e = (left + right).to_array();
+        self[0] += rhs[0];
+        self[1] += rhs[1];
+        self[2] += rhs[2];
     }
 }
 
 impl std::ops::Sub for Vec3 {
     type Output = Vec3;
-    // fn sub(self, rhs: Vec3) -> Self::Output {
-    //     Vec3 {
-    //         e: [
-    //             self[0] - rhs[0],
-    //             self[1] - rhs[1],
-    //             self[2] - rhs[2],
-    //             self[3] - rhs[3],
-    //         ],
-    //     }
-    // }
     fn sub(self, rhs: Vec3) -> Self::Output {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        let e = (left - right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
+        }
     }
 }
 
 impl std::ops::SubAssign for Vec3 {
-    // fn sub_assign(&mut self, rhs: Vec3) {
-    //     self[0] -= rhs[0];
-    //     self[1] -= rhs[1];
-    //     self[2] -= rhs[2];
-    // }
     fn sub_assign(&mut self, rhs: Vec3) {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        self.e = (left - right).to_array();
+        self[0] -= rhs[0];
+        self[1] -= rhs[1];
+        self[2] -= rhs[2];
     }
 }
 
 impl std::ops::Mul<f32> for Vec3 {
     type Output = Vec3;
-    // fn mul(self, rhs: f32) -> Self::Output {
-    //     Vec3 {
-    //         e: [self[0] * rhs, self[1] * rhs, self[2] * rhs, self[3] * rhs],
-    //     }
-    // }
     fn mul(self, rhs: f32) -> Self::Output {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::splat(rhs);
-        let e = (left * right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self[0] * rhs, self[1] * rhs, self[2] * rhs],
+        }
     }
 }
 
 impl std::ops::Mul<Vec3> for Vec3 {
     type Output = Vec3;
-    // fn mul(self, rhs: Vec3) -> Self::Output {
-    //     Vec3 {
-    //         e: [
-    //             self[0] * rhs[0],
-    //             self[1] * rhs[1],
-    //             self[2] * rhs[2],
-    //             self[3] * rhs[3],
-    //         ],
-    //     }
-    // }
     fn mul(self, rhs: Vec3) -> Self::Output {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        let e = (left * right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
+        }
     }
 }
 
 impl std::ops::MulAssign<f32> for Vec3 {
-    // fn mul_assign(&mut self, rhs: f32) {
-    //     self[0] *= rhs;
-    //     self[1] *= rhs;
-    //     self[2] *= rhs;
-    // }
     fn mul_assign(&mut self, rhs: f32) {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::splat(rhs);
-        self.e = (left * right).to_array();
+        self[0] *= rhs;
+        self[1] *= rhs;
+        self[2] *= rhs;
     }
 }
 
 impl std::ops::Mul<Vec3> for f32 {
     type Output = Vec3;
 
-    // fn mul(self, rhs: Vec3) -> Self::Output {
-    //     Vec3 {
-    //         e: [self * rhs[0], self * rhs[1], self * rhs[2], self * rhs[3]],
-    //     }
-    // }
     fn mul(self, rhs: Vec3) -> Self::Output {
-        let left = f32x4::splat(self);
-        let right = f32x4::from_slice(&rhs.e);
-        let e = (left * right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self * rhs[0], self * rhs[1], self * rhs[2]],
+        }
     }
 }
 
 impl std::ops::Div<f32> for Vec3 {
     type Output = Vec3;
-    // fn div(self, rhs: f32) -> Self::Output {
-    //     Vec3 {
-    //         e: [self[0] / rhs, self[1] / rhs, self[2] / rhs, self[3] / rhs],
-    //     }
-    // }
     fn div(self, rhs: f32) -> Self::Output {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::splat(rhs);
-        let e = (left / right).to_array();
-        Vec3 { e }
+        Vec3 {
+            e: [self[0] / rhs, self[1] / rhs, self[2] / rhs],
+        }
     }
 }
 
 impl std::ops::DivAssign<f32> for Vec3 {
-    // fn div_assign(&mut self, rhs: f32) {
-    //     self[0] /= rhs;
-    //     self[1] /= rhs;
-    //     self[2] /= rhs;
-    // }
     fn div_assign(&mut self, rhs: f32) {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::splat(rhs);
-        self.e = (left / right).to_array();
+        self[0] /= rhs;
+        self[1] /= rhs;
+        self[2] /= rhs;
     }
 }
 
@@ -211,15 +134,8 @@ impl Vec3 {
         self[2]
     }
 
-    // pub fn dot(self, rhs: Vec3) -> f32 {
-    //     self[0] * rhs[0] + self[1] * rhs[1] + self[2] * rhs[2]
-    // }
-
     pub fn dot(self, rhs: Vec3) -> f32 {
-        let left = f32x4::from_slice(&self.e);
-        let right = f32x4::from_slice(&rhs.e);
-        let prods = (left * right).to_array();
-        prods[..3].iter().sum()
+        self[0] * rhs[0] + self[1] * rhs[1] + self[2] * rhs[2]
     }
 
     pub fn length(self) -> f32 {
@@ -232,7 +148,6 @@ impl Vec3 {
                 self[1] * rhs[2] - self[2] * rhs[1],
                 self[2] * rhs[0] - self[0] * rhs[2],
                 self[0] * rhs[1] - self[1] * rhs[0],
-                1.0,
             ],
         }
     }
@@ -278,20 +193,14 @@ impl Vec3 {
 
 impl Vec3 {
     pub fn random(r: std::ops::Range<f32>) -> Vec3 {
-        let nums: [f32; 4] = rand::random();
-        let nums = f32x4::from_array(nums);
-        let res = f32x4::splat(r.start) + f32x4::splat(r.end - r.start) * nums;
-        Vec3 { e: res.to_array() }
-        // let mut rng = rand::thread_rng();
-
-        // Vec3 {
-        //     e: [
-        //         rng.gen_range(r.clone()),
-        //         rng.gen_range(r.clone()),
-        //         rng.gen_range(r.clone()),
-        //         rng.gen_range(r),
-        //     ],
-        // }
+        let mut rng = rand::thread_rng();
+        Vec3 {
+            e: [
+                rng.gen_range(r.clone()),
+                rng.gen_range(r.clone()),
+                rng.gen_range(r),
+            ],
+        }
     }
 
     pub fn random_in_unit_sphere() -> Vec3 {
